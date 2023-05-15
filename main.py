@@ -5,6 +5,7 @@ import disnake
 from alaric import Document, AQ
 from alaric.comparison import EQ
 from disnake.ext import commands
+from disnake.ext.commands import LargeIntConversionFailure
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from user import User
@@ -38,6 +39,20 @@ async def on_ready():
     await bot.change_presence(activity=disnake.Game("with fire"))
 
 
+@bot.event
+async def on_slash_command_error(
+    interaction: disnake.ApplicationCommandInteraction, exception: disnake.HTTPException
+):
+    exception = getattr(exception, "original", exception)
+    if isinstance(exception, LargeIntConversionFailure):
+        return await interaction.send(
+            "The role id needs to be a number.", ephemeral=True
+        )
+
+    await interaction.send("Something went wrong.", ephemeral=True)
+    raise exception
+
+
 async def role_ids_complete(inter, string: str) -> list[str]:
     string = string.lower()
     return [str(lang) for lang in role_ids if string in str(lang).lower()]
@@ -51,6 +66,7 @@ async def set_color(
         description="The color role you want",
     ),
 ):
+    await interaction.response.defer(ephemeral=True, with_message=True)
     if role_id in role_ids:
         role: disnake.Role = interaction.guild.get_role(role_id)
         await interaction.author.edit(roles=[role])
@@ -78,6 +94,7 @@ async def verify_flag(
         description="The flag to verify. (Bit between CTF{ and })"
     ),
 ):
+    await interaction.response.defer(ephemeral=True, with_message=True)
     if flag not in flags:
         return await interaction.send("That doesn't look like a flag.", ephemeral=True)
 
@@ -104,6 +121,7 @@ async def verify_flag(
 
 @bot.slash_command(description="Whats my favorite emoji?", name="emojis")
 async def emoji_check(interaction: disnake.GuildCommandInteraction, emoji: str):
+    await interaction.response.defer(ephemeral=True, with_message=True)
     if emoji == "🔥":
         return await interaction.send(
             "Absolutely :fire:\n\n`CTF{p1ay1n6_w1th_f1r3}`", ephemeral=True
@@ -114,6 +132,7 @@ async def emoji_check(interaction: disnake.GuildCommandInteraction, emoji: str):
 
 @bot.slash_command(description="Check your flag count.", name="count")
 async def count(interaction: disnake.GuildCommandInteraction):
+    await interaction.response.defer(ephemeral=True, with_message=True)
     total = len(flags)
     user: User | None = await user_db.find(AQ(EQ("_id", interaction.author.id)))
     if user is None:
@@ -124,6 +143,7 @@ async def count(interaction: disnake.GuildCommandInteraction):
 
 @bot.slash_command(description="Flag leaderboard.", name="leaderboard")
 async def leaderboard(interaction: disnake.GuildCommandInteraction):
+    await interaction.response.defer(ephemeral=True, with_message=True)
     users: list[User] = await user_db.get_all({})
     users = sorted(users, key=lambda u: len(u.flags), reverse=True)
     embed = disnake.Embed(

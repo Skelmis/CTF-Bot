@@ -9,6 +9,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from user import User
 
+# TODO Add some form of audio flag?
 bot = commands.InteractionBot(test_guilds=[1107616043372916827])
 log = logging.getLogger(__name__)
 logging.basicConfig(

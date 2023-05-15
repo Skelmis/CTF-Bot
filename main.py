@@ -156,4 +156,17 @@ async def leaderboard(interaction: disnake.GuildCommandInteraction):
     await interaction.send(embed=embed, ephemeral=True)
 
 
+@bot.slash_command(description="A bit about me.")
+async def about(interaction: disnake.GuildCommandInteraction):
+    await interaction.send(
+        ephemeral=True,
+        embed=disnake.Embed(
+            title="About me",
+            description="Hi!\nMy names Ethan and I made this bot.\n\n"
+            "Find more info about me on my [website](https://skelmis.co.nz) "
+            "or on my [Github](https://skelmis.co.nz/l/github)",
+        ),
+    )
+
+
 bot.run(os.environ["TOKEN"])

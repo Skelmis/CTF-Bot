@@ -28,7 +28,7 @@ flags = {
     "n0t_hidd3n_w3ll",  # /color role_id: 1107618898326597712
     "1n_pl41n_s1t3",  # My github readme
     "3x4mp13_f14g",  # #info flag
-    "W31c0m3_t0_my_s1te",  # skelmis.co.nz
+    # "W31c0m3_t0_my_s1te",  # skelmis.co.nz
     "p1ay1n6_w1th_f1r3",  # /emojis emoji: :fire:
 }
 
